@@ -1,0 +1,19 @@
+{
+  "name": "tg-bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "bot.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "feedme": "^1.1.2",
+    "find-rss": "^1.6.4",
+    "got": "^8.0.3",
+    "lodash": "^4.17.4",
+    "node-telegram-bot-api": "^0.30.0",
+    "parse-rss": "^1.0.3"
+  }
+}
