@@ -1,9 +1,6 @@
 const TelegramBot = require( 'node-telegram-bot-api' );
 const got = require( 'got' );
-const FeedMe = require( 'feedme' );
 const parser = require( 'parse-rss' );
-const _ = require( 'lodash' );
-// const tokens = require('config.js)'
 const tokens = require( './config.js' );
 
 const newsUrl = 'https://newsapi.org/v2/top-headlines?sources=crypto-coins-news&apiKey=';
