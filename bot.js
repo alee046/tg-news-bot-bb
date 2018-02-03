@@ -28,7 +28,7 @@ bot.onText( /\/rss ([0-9]+)/, ( msg, match ) => {
     const chatId = msg.chat.id;
     parser( rssUrl, ( err, rss ) => {
     let res = rss,
-        num = match[1];
+        num = match[ 1 ];
         for ( let i = 0; i < num; i++ ) {
             bot.sendMessage( chatId, 
                 `${res[i].title} : ${res[i].link}`, 
@@ -42,7 +42,7 @@ bot.onText( /\/rss ([0-9]+)/, ( msg, match ) => {
 
 bot.onText( /\/spamdeezy ([0-9]+)/, ( msg, match ) => {
     const chatId = msg.chat.id;
-    const num = match[1]; 
+    const num = match[ 1 ]; 
 
     for ( let i = 0; i < num; i++ ) {
         bot.sendMessage( chatId,
