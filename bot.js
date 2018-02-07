@@ -3,9 +3,10 @@ const got = require( 'got' );
 const parser = require( 'parse-rss' );
 const tokens = require( './config.js' );
 const _ = require('lodash');
+
 const newsUrl = 'https://newsapi.org/v2/top-headlines?sources=crypto-coins-news&apiKey=';
 const rssUrl = 'http://feed.informer.com/digests/I2GGLAVR70/feeder.rss';
-
+const herokuUrl = ' https://pct-news-bot.herokuapp.com/;'
 const idnum = '-1001228605946';
 const testnum = '453845092';
 const prophet = '-310959734';
@@ -83,7 +84,7 @@ var interval = setInterval( () => {
         }, ( err ) => {
             console.log( err );
         }); 
-}, 20000 );
+}, 2000 );
 
 bot.onText( /\/spamdeezy/, ( msg, match ) => {
     const chatId = msg.chat.id;
