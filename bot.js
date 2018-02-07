@@ -74,7 +74,7 @@ var interval = setInterval( () => {
             for ( let i = 0; i < 9; i++ ) {
                     response +=  "[" + res[ i ].title + "](" + res[ i ] .link + ")\n\n";
             };
-            bot.sendMessage( prophet,
+            bot.sendMessage( idnum,
                 response, 
                 { disable_web_page_preview : true,
                 parse_mode : 'markdown'
@@ -83,7 +83,7 @@ var interval = setInterval( () => {
         }, ( err ) => {
             console.log( err );
         }); 
-}, 600000 );
+}, 20000 );
 
 bot.onText( /\/spamdeezy/, ( msg, match ) => {
     const chatId = msg.chat.id;
