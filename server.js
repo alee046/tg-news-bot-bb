@@ -1,6 +1,7 @@
 var express = require('express');
 var packageInfo = require('./package.json');
 const tokens = require( './config.js' );
+const bot = require('./bot');
 var app = express();
 
 var bodyParser = require('body-parser');
