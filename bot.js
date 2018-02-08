@@ -84,7 +84,7 @@ var interval = setInterval( () => {
         }, ( err ) => {
             console.log( err );
         }); 
-}, 600000 );
+}, 3600000 );
 
 bot.onText( /\/spamdeezy/, ( msg, match ) => {
     const chatId = msg.chat.id;
