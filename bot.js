@@ -19,15 +19,15 @@ const feedList = [
     'http://themerkle.com/feed/',
     'http://www.coinspectator.com/feed/'
 ]
-const bot = new TelegramBot( tokens.botToken, {polling:true} );
+const bot = new TelegramBot( tokens.botToken, { polling: true } );
 
-bot.setWebHook('https://pct-news-bot.herokuapp.com/' + bot.token);
+bot.setWebHook( 'https://pct-news-bot.herokuapp.com/' + bot.token );
 
 bot.onText( /\/news/, ( msg, match ) => {
 
     const chatId = msg.chat.id;
     bot.sendMessage( chatId, '-----Todays news----:' );
-    got( newsUrl + tokens.newsToken ).then( (result, error) => {
+    got( newsUrl + tokens.newsToken ).then( (result, error ) => {
         let match = JSON.parse( result.body ); 
         for ( let i in match.articles ) {
             bot.sendMessage( chatId, 
@@ -62,7 +62,7 @@ bot.onText( /\/rss ([0-9]+)/, ( msg, match ) => {
     }); 
 });
 
-var interval = setInterval( () => {
+const interval = setInterval( () => {
     bot.sendMessage( prophet, 
         '----News for the hour----', 
         { disable_web_page_preview : true }
@@ -73,18 +73,18 @@ var interval = setInterval( () => {
         let response = '';
         let res = rss;
             for ( let i = 0; i < 9; i++ ) {
-                    response +=  "[" + res[ i ].title + "](" + res[ i ] .link + ")\n\n";
+                    response +=  "[" + res[ i ].title + "](" + res[ i ].link + ")\n\n";
             };
             bot.sendMessage( prophet,
-                response, 
-                { disable_web_page_preview : true,
-                parse_mode : 'markdown'
+                response, {
+                    disable_web_page_preview : true,
+                    parse_mode : 'markdown'
                 }
             );  
         }, ( err ) => {
             console.log( err );
         }); 
-},1800000 );
+}, 3600000 );
 
 bot.onText( /\/spamdeezy/, ( msg, match ) => {
     const chatId = msg.chat.id;
@@ -105,7 +105,7 @@ bot.onText( /\/spamdeezy/, ( msg, match ) => {
         ▌▓▓▓▄▄▀▀▓▓▓▀▓▓▓▓▓▓▓▓█▓█▓█▓▓▌█▌
         █▐▓▓▓▓▓▓▄▄▄▓▓▓▓▓▓█▓█▓█▓█▓▓▓▐
             `, 
-        { disable_web_page_preview : true });
+        { disable_web_page_preview : true } );
     }
 });
 
