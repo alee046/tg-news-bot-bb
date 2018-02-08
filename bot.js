@@ -21,7 +21,7 @@ const feedList = [
 ]
 const bot = new TelegramBot( tokens.botToken );
 
-bot.setWebHook('https://pct-news-bot.herokuapp.com/' + tokens.botToken );
+bot.setWebHook('https://pct-news-bot.herokuapp.com/' + bot.token);
 
 bot.onText( /\/news/, ( msg, match ) => {
 
@@ -75,7 +75,7 @@ var interval = setInterval( () => {
             for ( let i = 0; i < 9; i++ ) {
                     response +=  "[" + res[ i ].title + "](" + res[ i ] .link + ")\n\n";
             };
-            bot.sendMessage( idnum,
+            bot.sendMessage( prophet,
                 response, 
                 { disable_web_page_preview : true,
                 parse_mode : 'markdown'
@@ -84,7 +84,7 @@ var interval = setInterval( () => {
         }, ( err ) => {
             console.log( err );
         }); 
-}, 2000 );
+}, 10000 );
 
 bot.onText( /\/spamdeezy/, ( msg, match ) => {
     const chatId = msg.chat.id;
