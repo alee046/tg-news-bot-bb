@@ -11,7 +11,7 @@ app.get('/', function (req, res) {
 app.use(bodyParser.json());
 
 app.post('/' + tokens.botToken, function (req, res) {
-  bot.processUpdate(req.body);
+  // bot.processUpdate(req.body);
   res.json(res);
   res.sendStatus(200);
 });
