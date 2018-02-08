@@ -11,12 +11,12 @@ app.get('/', function (req, res) {
 app.use(bodyParser.json());
 
 app.post('/' + tokens.botToken, function (req, res) {
-//   bot.processUpdate(req.body);
-res.json(res);
+  // bot.processUpdate(req.body);
+  // res.json(res);
   res.sendStatus(200);
 });
 
-var server = app.listen(3000, function () {
+var server = app.listen((process.env.PORT || 5000), function () {
   var host = server.address().address;
   var port = server.address().port;
 
