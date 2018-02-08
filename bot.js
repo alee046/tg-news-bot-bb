@@ -19,9 +19,9 @@ const feedList = [
     'http://themerkle.com/feed/',
     'http://www.coinspectator.com/feed/'
 ]
-const bot = new TelegramBot( tokens.botToken, { polling: {
-    params: [ "message" ]
-} } );
+const bot = new TelegramBot( tokens.botToken );
+
+bot.setWebHook('https://pct-news-bot.herokuapp.com/' + tokens.botToken );
 
 bot.onText( /\/news/, ( msg, match ) => {
 
