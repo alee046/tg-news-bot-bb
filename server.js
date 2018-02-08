@@ -12,7 +12,7 @@ app.use(bodyParser.json());
 
 app.post('/' + tokens.botToken, function (req, res) {
   // bot.processUpdate(req.body);
-  res.json(res);
+  // res.json(res);
   res.sendStatus(200);
 });
 
