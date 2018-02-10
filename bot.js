@@ -75,15 +75,16 @@ bot.onText( /\/rss ([0-9]+)/, ( msg, match ) => {
 });
 
 const interval = setInterval( () => {
-    bot.sendMessage( prophet, 
-        '----News for the hour----', 
-        { disable_web_page_preview : true }
-    );
+    // bot.sendMessage( prophet, 
+    //     '----News for the hour----', 
+    //     { disable_web_page_preview : true }
+    // );
 
     var url = _.sample( feedList );
     parser( url, ( err, rss ) => {
         let response = '';
         let res = rss;
+        response += '----News for the hour----\n\n'
             for ( let i = 0; i < 9; i++ ) {
                     response +=  "[" + res[ i ].title + "](" + res[ i ].link + ") source: [" + res[i].meta.title + "](" + res[i].meta.link + ")\n\n";
             };
@@ -96,7 +97,7 @@ const interval = setInterval( () => {
         }, ( err ) => {
             console.log( err );
         }); 
-}, 720000 );
+}, 6000 );
 
 bot.onText( /\/spamdeezy/, ( msg, match ) => {
     const chatId = msg.chat.id;
