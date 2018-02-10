@@ -86,7 +86,7 @@ const interval = setInterval( () => {
         let res = rss;
         response += '----News for the hour----\n\n'
             for ( let i = 0; i < 9; i++ ) {
-                    response +=  "[" + res[ i ].title + "](" + res[ i ].link + ") source: [" + res[i].meta.title + "](" + res[i].meta.link + ")\n\n";
+                    response +=  "[" + res[ i ].title + "](" + res[ i ].link + ") \n Source: [" + res[i].meta.title + "](" + res[i].meta.link + ")\n\n";
             };
             bot.sendMessage( prophet,
                 response, {
@@ -97,7 +97,7 @@ const interval = setInterval( () => {
         }, ( err ) => {
             console.log( err );
         }); 
-}, 6000 );
+}, 720000 );
 
 bot.onText( /\/spamdeezy/, ( msg, match ) => {
     const chatId = msg.chat.id;
