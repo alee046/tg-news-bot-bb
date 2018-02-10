@@ -17,8 +17,20 @@ const feedList = [
     'https://www.blockchaindailynews.com/xml/syndication.rss',
     'https://www.reddit.com/r/icocrypto/.rss',
     'http://themerkle.com/feed/',
+    'https://www.smithandcrown.com/feed/',
+    'https://youmeandbtc.com/feed/',
+    'http://feeds.feedburner.com/CoinDesk',
+    'https://epicenterbitcoin.com/feed/',
+    'https://bitsonline.com/feed/',
+    'https://cointelegraph.com/rss',
+    'https://www.finextra.com/rss/channel.aspx?channel=blockchain',
+    'https://www.ethnews.com/rss.xml',
+    'http://bitcoinist.net/feed/',
+    'https://medium.com/feed/tag/blockchain',
+    'http://allcoinsnews.com/feed/',
     'http://www.coinspectator.com/feed/'
-]
+];
+
 const bot = new TelegramBot( tokens.botToken, { polling: true } );
 
 bot.setWebHook( 'https://pct-news-bot.herokuapp.com/' + bot.token );
@@ -68,12 +80,12 @@ const interval = setInterval( () => {
         { disable_web_page_preview : true }
     );
 
-    let url = _.sample( feedList );
+    var url = _.sample( feedList );
     parser( url, ( err, rss ) => {
         let response = '';
         let res = rss;
             for ( let i = 0; i < 9; i++ ) {
-                    response +=  "[" + res[ i ].title + "](" + res[ i ].link + ")\n\n";
+                    response +=  "[" + res[ i ].title + "](" + res[ i ].link + ") source: [" + res[i].meta.title + "](" + res[i].meta.link + ")\n\n";
             };
             bot.sendMessage( prophet,
                 response, {
@@ -84,7 +96,7 @@ const interval = setInterval( () => {
         }, ( err ) => {
             console.log( err );
         }); 
-}, 3600000 );
+}, 720000 );
 
 bot.onText( /\/spamdeezy/, ( msg, match ) => {
     const chatId = msg.chat.id;
