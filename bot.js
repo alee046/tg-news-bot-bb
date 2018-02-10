@@ -84,9 +84,9 @@ const interval = setInterval( () => {
     parser( url, ( err, rss ) => {
         let response = '';
         let res = rss;
-        response += '----News for the hour----\n\n'
+        response += '----News----\n\n'
             for ( let i = 0; i < 9; i++ ) {
-                    response +=  "[" + res[ i ].title + "](" + res[ i ].link + ") \n Source: [" + res[i].meta.title + "](" + res[i].meta.link + ")\n\n";
+                    response +=  "[" + res[ i ].title + "](" + res[ i ].link + ") \nSource: [" + res[i].meta.title + "](" + res[i].meta.link + ")\n\n";
             };
             bot.sendMessage( prophet,
                 response, {
@@ -97,7 +97,7 @@ const interval = setInterval( () => {
         }, ( err ) => {
             console.log( err );
         }); 
-}, 720000 );
+}, 7200000 );
 
 bot.onText( /\/spamdeezy/, ( msg, match ) => {
     const chatId = msg.chat.id;
