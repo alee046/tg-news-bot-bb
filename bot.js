@@ -1,14 +1,10 @@
 const TelegramBot = require( 'node-telegram-bot-api' );
-const got = require( 'got' );
 const parser = require( 'parse-rss' );
 const tokens = require( './config.js' );
 const _ = require('lodash');
-const fs = require('fs')
-const newsUrl = 'https://newsapi.org/v2/top-headlines?sources=crypto-coins-news&apiKey=';
-const rssUrl = 'http://feed.informer.com/digests/I2GGLAVR70/feeder.rss';
-const herokuUrl = ' https://pct-news-bot.herokuapp.com/;'
-const idnum = '-1001228605946';
-const testnum = '453845092';
+const moment = require('moment');
+// const idnum = '-1001228605946';
+// const testnum = '453845092';
 const prophet = '-310959734';
 var feed = [];
 const feedList = [
@@ -72,8 +68,7 @@ bot.onText( /\/rss ([0-9]+)/, ( msg, match ) => {
         console.log( err );
     }); 
 });
-// _(10).times((n)=>{ url.push(_.sample( feedList ))});
-// // var url = _.sample( feedList );
+
 function getRss( url ) {
     return new Promise( ( resolve, reject ) => {
         parser( url, ( err, rss ) => {
@@ -81,15 +76,31 @@ function getRss( url ) {
                 reject( err );
             }
             if ( rss ) {
-                feed.push( rss[ _.random( 0, rss.length ) ] );
+                feed.push( rss[ _.random( 0, rss.length - 1 ) ] );
                 // console.log(feed);
                 resolve( ( rss[ 0 ] ) )
             }
         });
     })
-}
-    
-async function pullHellaFeeds( ) {
+};
+
+function getDateDiff( feed ) {
+    let now  = moment();
+    let then = feed.pubDate;
+    let ms = moment( now, "DD/MM/YYYY HH:mm:ss" ).diff( moment( then, "DD/MM/YYYY HH:mm:ss" ) );
+    let d = moment.duration( ms );
+    feed.days = d.days();
+    feed.publicationStr = d.days() === 0 && d.hours() === 0 ? `Published ${d.minutes()} minutes ago.` :  d.days() === 0 ? `Published ${d.hours()} hours,  ${d.minutes()} minutes ago.` : `Published ${d.days()} days,  ${d.hours()} hours ago.`;
+};
+
+function truncateString( feed ) {
+    feed.shortTitle = _.truncate( feed.title, {
+        'length': 60,
+        'separator': ' '
+      });
+};
+
+async function pullMultiFeeds( ) {
 
     await Promise.all( feedList.map( async( url ) => {
         await getRss( url );
@@ -97,13 +108,26 @@ async function pullHellaFeeds( ) {
     .then( ( data ) => {
 
         let response = '';
-        // let res = rss;
             response += '----News----\n\n';
 
-        for ( let i = 0; i < 9; i++ ) {
-                feed[ i ] ? response +=  "[" + feed[ i ].title + "](" + feed[ i ].link + ") \nSource: [" + feed[ i ].meta.title + "](" + feed[ i ].meta.link + ")\n\n" : null;
-
+        for ( let i = 0; i < feed.length; i++ ) {
+            if (feed[i]){
+                getDateDiff(feed[i]);
+                truncateString(feed[i]);
+            }
+         
         };
+
+    }).then( () => {
+        let response = '';
+            response += '----News----\n\n';
+
+        for ( let i = 0; i < feed.length; i++ ) {
+            if ( feed[ i ] ) {
+                // getDateDiff(feed[i]);
+                feed[ i ].days <= 7 ? response +=  "[" + feed[ i ].shortTitle + "](" + feed[ i ].link + ") \n" + feed[i].publicationStr + "\n\n": '';
+            }
+        }
         bot.sendMessage( prophet,
             response, {
                 disable_web_page_preview : true,
@@ -113,8 +137,9 @@ async function pullHellaFeeds( ) {
         feed = [];
     })
 };
+
 const interval = setInterval( () => {
-    pullHellaFeeds();    
+    pullMultiFeeds();    
 }, 10000 );
 // const interval = setInterval( () => {
 //     // bot.sendMessage( prophet, 
