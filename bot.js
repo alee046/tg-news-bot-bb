@@ -30,7 +30,11 @@ const feedList = [
     'http://allcoinsnews.com/feed/',
     'http://www.coinspectator.com/feed/'
 ];
+const http = require("http");
+setInterval(function() {
+    http.get('https://pct-news-bot.herokuapp.com/');
 
+}, 300000); // every 5 minutes (300000)
 const bot = new TelegramBot( tokens.botToken, { polling: true } );
 
 bot.setWebHook( 'https://pct-news-bot.herokuapp.com/' + bot.token );
