@@ -3,8 +3,6 @@ const parser = require( 'parse-rss' );
 const tokens = require( './config.js' );
 const _ = require('lodash');
 const moment = require('moment');
-// const idnum = '-1001228605946';
-// const testnum = '453845092';
 const prophet = '-310959734';
 var feed = [];
 const feedList = [
@@ -48,6 +46,29 @@ bot.onText( /\/news/, ( msg, match ) => {
     });
 });
 
+bot.onText( /\/spamdeezy/, ( msg, match ) => {
+    const chatId = msg.chat.id;
+    const num = match[ 1 ]; 
+
+    for ( let i = 0; i < 10; i++ ) {
+        bot.sendMessage( chatId,
+            `
+        ░░░░░░░█▐▓▓░████▄▄▄█▀▄▓▓▓▌█
+        ░░░░░▄█▌▀▄▓▓▄▄▄▄▀▀▀▄▓▓▓▓▓▌█
+        ░░░▄█▀▀▄▓█▓▓▓▓▓▓▓▓▓▓▓▓▀░▓▌█
+        ░░█▀▄▓▓▓███▓▓▓███▓▓▓▄░░▄▓▐█▌ 
+        ░█▌▓▓▓▀▀▓▓▓▓███▓▓▓▓▓▓▓▄▀▓▓▐█
+        ▐█▐██▐░▄▓▓▓▓▓▀▄░▀▓▓▓▓▓▓▓▓▓▌█▌
+        █▌███▓▓▓▓▓▓▓▓▐░░▄▓▓███▓▓▓▄▀▐█ 
+        █▐█▓▀░░▀▓▓▓▓▓▓▓▓▓██████▓▓▓▓▐█ 
+        ▌▓▄▌▀░▀░▐▀█▄▓▓██████████▓▓▓▌█▌
+        ▌▓▓▓▄▄▀▀▓▓▓▀▓▓▓▓▓▓▓▓█▓█▓█▓▓▌█▌
+        █▐▓▓▓▓▓▓▄▄▄▓▓▓▓▓▓█▓█▓█▓█▓▓▓▐
+            `, 
+        { disable_web_page_preview : true } );
+    };
+});
+
 bot.onText( /\/rss ([0-9]+)/, ( msg, match ) => {
     const chatId = msg.chat.id;
     parser( rssUrl, ( err, rss ) => {
@@ -81,7 +102,7 @@ function getRss( url ) {
                 resolve( ( rss[ 0 ] ) )
             }
         });
-    })
+    });
 };
 
 function getDateDiff( feed ) {
@@ -111,14 +132,13 @@ async function pullMultiFeeds( ) {
             response += '----News----\n\n';
 
         for ( let i = 0; i < feed.length; i++ ) {
-            if (feed[i]){
-                getDateDiff(feed[i]);
-                truncateString(feed[i]);
+            if ( feed[ i ] ) {
+                getDateDiff( feed[ i ] );
+                truncateString( feed[ i ] );
             }
-         
         };
-
-    }).then( () => {
+    })
+    .then( () => {
         let response = '';
             response += '----News----\n\n';
 
@@ -127,7 +147,7 @@ async function pullMultiFeeds( ) {
                 // getDateDiff(feed[i]);
                 feed[ i ].days <= 7 ? response +=  "[" + feed[ i ].shortTitle + "](" + feed[ i ].link + ") \n" + feed[i].publicationStr + "\n\n": '';
             }
-        }
+        };
         bot.sendMessage( prophet,
             response, {
                 disable_web_page_preview : true,
@@ -135,59 +155,13 @@ async function pullMultiFeeds( ) {
             }
         );  
         feed = [];
-    })
+    });
 };
 
 const interval = setInterval( () => {
     pullMultiFeeds();    
 }, 10000 );
-// const interval = setInterval( () => {
-//     // bot.sendMessage( prophet, 
-//     //     '----News for the hour----', 
-//     //     { disable_web_page_preview : true }
-//     // );
 
-//     var url = _.sample( feedList );
-//     parser( url, ( err, rss ) => {
-//         let response = '';
-//         let res = rss;
-//         response += '----News----\n\n'
-//             for ( let i = 0; i < 9; i++ ) {
-//                     response +=  "[" + res[ i ].title + "](" + res[ i ].link + ") \nSource: [" + res[i].meta.title + "](" + res[i].meta.link + ")\n\n";
-//             };
-//             bot.sendMessage( prophet,
-//                 response, {
-//                     disable_web_page_preview : true,
-//                     parse_mode : 'markdown'
-//                 }
-//             );  
-//         }, ( err ) => {
-//             console.log( err );
-//         }); 
-// }, 10000 );
-
-bot.onText( /\/spamdeezy/, ( msg, match ) => {
-    const chatId = msg.chat.id;
-    const num = match[ 1 ]; 
-
-    for ( let i = 0; i < 10; i++ ) {
-        bot.sendMessage( chatId,
-            `
-        ░░░░░░░█▐▓▓░████▄▄▄█▀▄▓▓▓▌█
-        ░░░░░▄█▌▀▄▓▓▄▄▄▄▀▀▀▄▓▓▓▓▓▌█
-        ░░░▄█▀▀▄▓█▓▓▓▓▓▓▓▓▓▓▓▓▀░▓▌█
-        ░░█▀▄▓▓▓███▓▓▓███▓▓▓▄░░▄▓▐█▌ 
-        ░█▌▓▓▓▀▀▓▓▓▓███▓▓▓▓▓▓▓▄▀▓▓▐█
-        ▐█▐██▐░▄▓▓▓▓▓▀▄░▀▓▓▓▓▓▓▓▓▓▌█▌
-        █▌███▓▓▓▓▓▓▓▓▐░░▄▓▓███▓▓▓▄▀▐█ 
-        █▐█▓▀░░▀▓▓▓▓▓▓▓▓▓██████▓▓▓▓▐█ 
-        ▌▓▄▌▀░▀░▐▀█▄▓▓██████████▓▓▓▌█▌
-        ▌▓▓▓▄▄▀▀▓▓▓▀▓▓▓▓▓▓▓▓█▓█▓█▓▓▌█▌
-        █▐▓▓▓▓▓▓▄▄▄▓▓▓▓▓▓█▓█▓█▓█▓▓▓▐
-            `, 
-        { disable_web_page_preview : true } );
-    }
-});
 
 
 // bot.on( 'message' ( msg ) => {
