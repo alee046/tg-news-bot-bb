@@ -10,7 +10,7 @@ const herokuUrl = ' https://pct-news-bot.herokuapp.com/;'
 const idnum = '-1001228605946';
 const testnum = '453845092';
 const prophet = '-310959734';
-
+const feed = [];
 const feedList = [
     'http://icopartners.com/feed/',
     'http://feed.informer.com/digests/I2GGLAVR70/feeder.rss',
@@ -73,7 +73,36 @@ bot.onText( /\/rss ([0-9]+)/, ( msg, match ) => {
         console.log( err );
     }); 
 });
+// _(10).times((n)=>{ url.push(_.sample( feedList ))});
+// // var url = _.sample( feedList );
+function getRss( url ) {
+    return new Promise( ( resolve, reject ) => {
+        parser( url, ( err, rss ) => {
+            if ( err ) {
+                reject( err );
+            }
+            if ( rss ) {
+            // console.log(rss[0])
+                feed.push( rss[ 0 ] );
+                // console.log(feed);
+                resolve( ( rss[ 0 ] ) )
+            }
+        });
+    })
+}
+    
+async function pullHellaFeeds( ) {
 
+    await Promise.all( feedList.map( async( url ) => {
+        feed.push(await getRss(url))
+        await getRss(url);
+    }))
+    .then( ( data ) => {
+        console.log( data )
+        console.log( feed.length )
+    })
+}
+    // pullHellaFeeds();
 const interval = setInterval( () => {
     // bot.sendMessage( prophet, 
     //     '----News for the hour----', 
