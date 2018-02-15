@@ -3,14 +3,14 @@ const got = require( 'got' );
 const parser = require( 'parse-rss' );
 const tokens = require( './config.js' );
 const _ = require('lodash');
-
+const fs = require('fs')
 const newsUrl = 'https://newsapi.org/v2/top-headlines?sources=crypto-coins-news&apiKey=';
 const rssUrl = 'http://feed.informer.com/digests/I2GGLAVR70/feeder.rss';
 const herokuUrl = ' https://pct-news-bot.herokuapp.com/;'
 const idnum = '-1001228605946';
 const testnum = '453845092';
 const prophet = '-310959734';
-const feed = [];
+var feed = [];
 const feedList = [
     'http://icopartners.com/feed/',
     'http://feed.informer.com/digests/I2GGLAVR70/feeder.rss',
@@ -22,7 +22,7 @@ const feedList = [
     'http://feeds.feedburner.com/CoinDesk',
     'https://epicenterbitcoin.com/feed/',
     'https://bitsonline.com/feed/',
-    'https://cointelegraph.com/rss',
+    // 'https://cointelegraph.com/rss',
     'https://www.finextra.com/rss/channel.aspx?channel=blockchain',
     'https://www.ethnews.com/rss.xml',
     'http://bitcoinist.net/feed/',
@@ -30,14 +30,9 @@ const feedList = [
     'http://allcoinsnews.com/feed/',
     'http://www.coinspectator.com/feed/'
 ];
-const http = require("http");
-setInterval(function() {
-    http.get('https://pct-news-bot.herokuapp.com/');
 
-}, 300000); // every 5 minutes (300000)
 const bot = new TelegramBot( tokens.botToken, { polling: true } );
 
-bot.setWebHook( 'https://pct-news-bot.herokuapp.com/' + bot.token );
 
 bot.onText( /\/news/, ( msg, match ) => {
 
@@ -86,8 +81,7 @@ function getRss( url ) {
                 reject( err );
             }
             if ( rss ) {
-            // console.log(rss[0])
-                feed.push( rss[ 0 ] );
+                feed.push( rss[ _.random( 0, rss.length ) ] );
                 // console.log(feed);
                 resolve( ( rss[ 0 ] ) )
             }
@@ -98,39 +92,54 @@ function getRss( url ) {
 async function pullHellaFeeds( ) {
 
     await Promise.all( feedList.map( async( url ) => {
-        feed.push(await getRss(url))
-        await getRss(url);
+        await getRss( url );
     }))
     .then( ( data ) => {
-        console.log( data )
-        console.log( feed.length )
-    })
-}
-    // pullHellaFeeds();
-const interval = setInterval( () => {
-    // bot.sendMessage( prophet, 
-    //     '----News for the hour----', 
-    //     { disable_web_page_preview : true }
-    // );
 
-    var url = _.sample( feedList );
-    parser( url, ( err, rss ) => {
         let response = '';
-        let res = rss;
-        response += '----News----\n\n'
-            for ( let i = 0; i < 9; i++ ) {
-                    response +=  "[" + res[ i ].title + "](" + res[ i ].link + ") \nSource: [" + res[i].meta.title + "](" + res[i].meta.link + ")\n\n";
-            };
-            bot.sendMessage( prophet,
-                response, {
-                    disable_web_page_preview : true,
-                    parse_mode : 'markdown'
-                }
-            );  
-        }, ( err ) => {
-            console.log( err );
-        }); 
-}, 7200000 );
+        // let res = rss;
+            response += '----News----\n\n';
+
+        for ( let i = 0; i < 9; i++ ) {
+                feed[ i ] ? response +=  "[" + feed[ i ].title + "](" + feed[ i ].link + ") \nSource: [" + feed[ i ].meta.title + "](" + feed[ i ].meta.link + ")\n\n" : null;
+
+        };
+        bot.sendMessage( prophet,
+            response, {
+                disable_web_page_preview : true,
+                parse_mode : 'markdown'
+            }
+        );  
+        feed = [];
+    })
+};
+const interval = setInterval( () => {
+    pullHellaFeeds();    
+}, 10000 );
+// const interval = setInterval( () => {
+//     // bot.sendMessage( prophet, 
+//     //     '----News for the hour----', 
+//     //     { disable_web_page_preview : true }
+//     // );
+
+//     var url = _.sample( feedList );
+//     parser( url, ( err, rss ) => {
+//         let response = '';
+//         let res = rss;
+//         response += '----News----\n\n'
+//             for ( let i = 0; i < 9; i++ ) {
+//                     response +=  "[" + res[ i ].title + "](" + res[ i ].link + ") \nSource: [" + res[i].meta.title + "](" + res[i].meta.link + ")\n\n";
+//             };
+//             bot.sendMessage( prophet,
+//                 response, {
+//                     disable_web_page_preview : true,
+//                     parse_mode : 'markdown'
+//                 }
+//             );  
+//         }, ( err ) => {
+//             console.log( err );
+//         }); 
+// }, 10000 );
 
 bot.onText( /\/spamdeezy/, ( msg, match ) => {
     const chatId = msg.chat.id;
