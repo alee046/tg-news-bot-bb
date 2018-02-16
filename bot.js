@@ -4,7 +4,6 @@ const tokens = require( './config.js' );
 const _ = require('lodash');
 const moment = require('moment');
 const prophet = '-310959734';
-var feed = [];
 const feedList = [
     'http://icopartners.com/feed/',
     'http://feed.informer.com/digests/I2GGLAVR70/feeder.rss',
@@ -23,7 +22,7 @@ const feedList = [
     'http://allcoinsnews.com/feed/',
     'http://www.coinspectator.com/feed/'
 ];
-
+var feed = [];
 const bot = new TelegramBot( tokens.botToken, { polling: true } );
 
 
@@ -139,7 +138,6 @@ async function pullMultiFeeds( ) {
 
         for ( let i = 0; i < feed.length; i++ ) {
             if ( feed[ i ] ) {
-                // getDateDiff(feed[i]);
                 feed[ i ].days <= 7 ? response +=  "[" + feed[ i ].shortTitle + "](" + feed[ i ].link + ") \n" + feed[i].publicationStr + "\n\n": '';
             }
         };
