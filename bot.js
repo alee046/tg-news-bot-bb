@@ -26,6 +26,38 @@ var feed = [];
 const bot = new TelegramBot( tokens.botToken, { polling: true } );
 
 
+// HELPER METHODS
+function getRss( url ) {
+    return new Promise( ( resolve, reject ) => {
+        parser( url, ( err, rss ) => {
+            if ( err ) {
+                reject( err );
+            }
+            if ( rss ) {
+                feed.push( rss[ _.random( 0, rss.length - 1 ) ] );
+                resolve( ( rss[ 0 ] ) )
+            }
+        });
+    });
+};
+// Returns date difference information eg. Published 5 days ago..
+function getDateDiff( feed ) {
+    let now  = moment();
+    let then = feed.pubDate;
+    let ms = moment( now, "DD/MM/YYYY HH:mm:ss" ).diff( moment( then, "DD/MM/YYYY HH:mm:ss" ) );
+    let d = moment.duration( ms );
+    feed.days = d.days();
+    // Outputs pertinent date info 
+    feed.publicationStr = d.days() === 0 && d.hours() === 0 ? `Published ${d.minutes()} minutes ago.` :  d.days() === 0 ? `Published ${d.hours()} hours,  ${d.minutes()} minutes ago.` : `Published ${d.days()} days,  ${d.hours()} hours ago.`;
+};
+
+function truncateString( feed ) {
+    feed.shortTitle = _.truncate( feed.title, {
+        'length': 60,
+        'separator': ' '
+    });
+};
+
 bot.onText( /\/news/, ( msg, match ) => {
 
     const chatId = msg.chat.id;
@@ -88,35 +120,6 @@ bot.onText( /\/rss ([0-9]+)/, ( msg, match ) => {
     }); 
 });
 
-function getRss( url ) {
-    return new Promise( ( resolve, reject ) => {
-        parser( url, ( err, rss ) => {
-            if ( err ) {
-                reject( err );
-            }
-            if ( rss ) {
-                feed.push( rss[ _.random( 0, rss.length - 1 ) ] );
-                resolve( ( rss[ 0 ] ) )
-            }
-        });
-    });
-};
-
-function getDateDiff( feed ) {
-    let now  = moment();
-    let then = feed.pubDate;
-    let ms = moment( now, "DD/MM/YYYY HH:mm:ss" ).diff( moment( then, "DD/MM/YYYY HH:mm:ss" ) );
-    let d = moment.duration( ms );
-    feed.days = d.days();
-    feed.publicationStr = d.days() === 0 && d.hours() === 0 ? `Published ${d.minutes()} minutes ago.` :  d.days() === 0 ? `Published ${d.hours()} hours,  ${d.minutes()} minutes ago.` : `Published ${d.days()} days,  ${d.hours()} hours ago.`;
-};
-
-function truncateString( feed ) {
-    feed.shortTitle = _.truncate( feed.title, {
-        'length': 60,
-        'separator': ' '
-    });
-};
 
 async function pullMultiFeeds( ) {
 
@@ -151,7 +154,8 @@ async function pullMultiFeeds( ) {
     });
 };
 
+// 2 hour timer
 const interval = setInterval( () => {
     pullMultiFeeds();    
-}, 7200000 );
+}, 10000 );
 
