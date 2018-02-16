@@ -16,7 +16,6 @@ const feedList = [
     'http://feeds.feedburner.com/CoinDesk',
     'https://epicenterbitcoin.com/feed/',
     'https://bitsonline.com/feed/',
-    // 'https://cointelegraph.com/rss',
     'https://www.finextra.com/rss/channel.aspx?channel=blockchain',
     'https://www.ethnews.com/rss.xml',
     'http://bitcoinist.net/feed/',
@@ -98,7 +97,6 @@ function getRss( url ) {
             }
             if ( rss ) {
                 feed.push( rss[ _.random( 0, rss.length - 1 ) ] );
-                // console.log(feed);
                 resolve( ( rss[ 0 ] ) )
             }
         });
@@ -118,7 +116,7 @@ function truncateString( feed ) {
     feed.shortTitle = _.truncate( feed.title, {
         'length': 60,
         'separator': ' '
-      });
+    });
 };
 
 async function pullMultiFeeds( ) {
@@ -127,9 +125,6 @@ async function pullMultiFeeds( ) {
         await getRss( url );
     }))
     .then( ( data ) => {
-
-        let response = '';
-            response += '----News----\n\n';
 
         for ( let i = 0; i < feed.length; i++ ) {
             if ( feed[ i ] ) {
@@ -162,10 +157,3 @@ const interval = setInterval( () => {
     pullMultiFeeds();    
 }, 10000 );
 
-
-
-// bot.on( 'message' ( msg ) => {
-//     console.log(msg);
-//     const chatId = msg.chat.id;
-//     // send a message to the chat acknowledging receipt of their message
-//   });
