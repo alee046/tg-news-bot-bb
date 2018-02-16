@@ -153,5 +153,5 @@ async function pullMultiFeeds( ) {
 
 const interval = setInterval( () => {
     pullMultiFeeds();    
-}, 10000 );
+}, 7200000 );
 
