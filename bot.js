@@ -34,8 +34,7 @@ function getRss( url ) {
                 reject( err );
             }
             if ( rss ) {
-                feed.push( rss[ _.random( 0, rss.length - 1 ) ] );
-                resolve( ( rss[ 0 ] ) )
+                resolve( ( feed.push( rss[ _.random( 0, rss.length - 1 ) ] ) ) )
             }
         });
     });
