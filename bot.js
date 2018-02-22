@@ -24,7 +24,43 @@ const feedList = [
 ];
 var feed = [];
 const bot = new TelegramBot( tokens.botToken, { polling: true } );
+const MongoClient = require('mongodb').MongoClient;
+const assert = require('assert');
 
+// Connection URL
+const url = 'mongodb://localhost:27017';
+
+// Database Name
+const dbName = 'myproject';
+
+// Use connect method to connect to the server
+// MongoClient.connect(url, function(err, client) {
+//   assert.equal(null, err);
+//   console.log("Connected successfully to server");
+
+//   const db = client.db(dbName);
+
+// });
+
+const insertDocuments = function( db, feed, callback ) {
+    // Get the documents collection
+    const collection = db.collection('Users');
+    // Insert some documents
+    // console.log(feed)
+    // console.log(arguments);
+    // db.collection.createIndex( {"link": 1}, { unique: true } )
+    _.each( feed, function( feed ) {
+            console.log( feed.link )
+        collection.update( { link: feed.link} , { $set: feed }, { upsert: true }, function( err, result ) {
+        // console.log(err,result)
+        //   assert.equal(err, null);
+        //   assert.equal(3, result.result.n);
+        //   assert.equal(3, result.ops.length);
+            console.log(`Inserted ${feed.length} documents into the collection`);
+            callback( result );
+        });
+    })
+}
 
 // HELPER METHODS
 function getRss( url ) {
@@ -34,7 +70,7 @@ function getRss( url ) {
                 reject( err );
             }
             if ( rss ) {
-                resolve( ( feed.push( rss[ _.random( 0, rss.length - 1 ) ] ) ) )
+                resolve( ( feed.push( rss ) ) )
             }
         });
     });
@@ -143,13 +179,27 @@ async function pullMultiFeeds( ) {
                 feed[ i ].days <= 7 ? response +=  "[" + feed[ i ].shortTitle + "](" + feed[ i ].link + ") \n" + feed[i].publicationStr + "\n\n": '';
             }
         };
-        bot.sendMessage( prophet,
-            response, {
-                disable_web_page_preview : true,
-                parse_mode : 'markdown'
-            }
-        );  
-        feed = [];
+        // insertDocuments(db, feed, function() {
+        //     client.close();
+        //   });
+        MongoClient.connect( url, function( err, client ) {
+          
+            const db = client.db( dbName );
+
+            insertDocuments( db, feed, function() {
+                console.log( 'success' );
+                //   findDocuments(db, function() {, 
+                //     client.close();
+                //   });
+            });
+        });
+        // bot.sendMessage( prophet,
+        //     response, {
+        //         disable_web_page_preview : true,
+        //         parse_mode : 'markdown'
+        //     }
+        // );  
+        // feed = [];
     });
 };
 
