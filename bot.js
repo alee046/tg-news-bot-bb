@@ -46,20 +46,30 @@ const insertDocuments = function( db, feed, callback ) {
     // Get the documents collection
     const collection = db.collection('Users');
     // Insert some documents
-    // console.log(feed)
-    // console.log(arguments);
+
     // db.collection.createIndex( {"link": 1}, { unique: true } )
-    _.each( feed, function( feed ) {
-            console.log( feed.link )
-        collection.update( { link: feed.link} , { $set: feed }, { upsert: true }, function( err, result ) {
-        // console.log(err,result)
-        //   assert.equal(err, null);
-        //   assert.equal(3, result.result.n);
-        //   assert.equal(3, result.ops.length);
-            console.log(`Inserted ${feed.length} documents into the collection`);
+    _.each( feed, function( yes ) {
+        //    console.log(yes.link)
+        //    console.log(yes.title)
+        collection.update( { link: yes.link} , { $set: yes }, { upsert: true }, ( err, result ) => {
+
             callback( result );
         });
-    })
+    });
+};
+var inc = 0
+const sendArticles = (db, callback) => {
+    return new Promise( ( resolve, reject ) => {
+    const collection = db.collection( 'Users' );
+        collection.find( { } ).sort( { pubdate: -1 } ).limit( 3 ).skip( yo ).toArray( ( err, docs ) => {
+            if ( err ) {
+                reject( err );
+            }
+            // console.log(docs)
+            inc += 3;
+            resolve( docs)
+        });
+    });
 }
 
 // HELPER METHODS
@@ -70,7 +80,7 @@ function getRss( url ) {
                 reject( err );
             }
             if ( rss ) {
-                resolve( ( feed.push( rss ) ) )
+                resolve( ( feed.push( ...rss ) ) )
             }
         });
     });
@@ -171,34 +181,59 @@ async function pullMultiFeeds( ) {
         };
     })
     .then( () => {
-        let response = '';
-            response += '----News----\n\n';
 
-        for ( let i = 0; i < feed.length; i++ ) {
-            if ( feed[ i ] ) {
-                feed[ i ].days <= 7 ? response +=  "[" + feed[ i ].shortTitle + "](" + feed[ i ].link + ") \n" + feed[i].publicationStr + "\n\n": '';
-            }
-        };
+        // for ( let i = 0; i < feed.length; i++ ) {
+        //     if ( feed[ i ] ) {
+        //         feed[ i ].days <= 7 ? response +=  "[" + feed[ i ].shortTitle + "](" + feed[ i ].link + ") \n" + feed[i].publicationStr + "\n\n": '';
+        //     }
+        // };
         // insertDocuments(db, feed, function() {
         //     client.close();
         //   });
         MongoClient.connect( url, function( err, client ) {
-          
+           
             const db = client.db( dbName );
+            let yo = sendArticles( db ).then( ( data ) => {
+                // let response = '';
+                // response += '----News----\n\n';
+            for ( let i = 0; i <3; i++ ) {
+                if ( data[ i ] ) {
+                    data[ i ].days <= 7 ? bot.sendMessage( prophet,
+                        "[" + data[ i ].shortTitle + "](" + data[ i ].link + ")\n", {
+                            parse_mode : 'markdown'
+                        }
+                    ) : null;
+                    // data[ i ].days <= 7 ? response +=  "[" + data[ i ].shortTitle + "](" + data[ i ].link + ")\n":null;
+                }
+            };
+            // console.log(response);            
+            // bot.sendMessage( prophet,
+            //     response, {
+            //         parse_mode : 'markdown'
+            //     }
+            // );  
+            })
+            // insertDocuments( db, feed, function() {
+            //     // console.log( 'success' );
+            //     //   findDocuments(db, function() {, 
+            //     //     client.close();
+            //     //   });
 
-            insertDocuments( db, feed, function() {
-                console.log( 'success' );
-                //   findDocuments(db, function() {, 
-                //     client.close();
-                //   });
-            });
+            // });
+            // for ( let i = 0; i < yo.length; i++ ) {
+            //     if ( yo[ i ] ) {
+            //         yo[ i ].days <= 7 ? response +=  "[" + yo[ i ].shortTitle + "](" + yo[ i ].link + ") \n" + yo[i].publicationStr + "\n\n": '';
+            //     }
+            // };
+            // bot.sendMessage( prophet,
+            //     response, {
+            //         disable_web_page_preview : true,
+            //         parse_mode : 'markdown'
+            //     }
+            // );  
         });
-        // bot.sendMessage( prophet,
-        //     response, {
-        //         disable_web_page_preview : true,
-        //         parse_mode : 'markdown'
-        //     }
-        // );  
+
+
         // feed = [];
     });
 };
